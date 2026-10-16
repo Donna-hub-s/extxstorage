@@ -328,8 +328,9 @@ class S3Backend(StorageBackend):
         if self._client is not None:
             try:
                 await self._client.__aexit__(None, None, None)
-            except Exception:
-                pass
+            except Exception as exc:
+                # Fermeture d'un client déjà en erreur : best-effort, mais jamais muet.
+                logger.debug("fermeture du client de stockage ignorée : %s", exc)
             self._client = None
 
     # ── URLs ──────────────────────────────────────────────────
